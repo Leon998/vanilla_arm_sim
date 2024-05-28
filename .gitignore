@@ -1,0 +1,5 @@
+n_joint_arm_to_point_control/trajectory/
+
+pybullet_control/__pycache__/
+pybullet_control/model/
+pybullet_control/trajectory/
