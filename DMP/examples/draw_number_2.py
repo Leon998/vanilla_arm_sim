@@ -17,9 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import sys
-print(sys.path)
 sys.path.append(os.getcwd()+'/DMP')
-print(sys.path)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,7 +25,7 @@ import matplotlib.pyplot as plt
 import pydmps
 import pydmps.dmp_discrete
 
-y_des = np.load("DMP/2.npz")["arr_0"].T
+y_des = np.load("DMP/examples/2.npz")["arr_0"].T
 y_des -= y_des[:, 0][:, None]
 print(y_des.shape)  # 演示轨迹的形状为(2, 79)
 

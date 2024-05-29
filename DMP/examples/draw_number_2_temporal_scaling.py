@@ -19,14 +19,13 @@ import os
 import sys
 sys.path.append(os.getcwd()+'/DMP')
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 import pydmps
 import pydmps.dmp_discrete
 
-y_des = np.load("DMP/2.npz")["arr_0"].T
+y_des = np.load("DMP/examples/2.npz")["arr_0"].T
 y_des -= y_des[:, 0][:, None]
 
 # test normal run

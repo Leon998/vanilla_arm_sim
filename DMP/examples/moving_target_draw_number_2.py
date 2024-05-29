@@ -26,7 +26,7 @@ import seaborn
 import pydmps
 import pydmps.dmp_discrete
 
-y_des = np.load("DMP/2.npz")["arr_0"].T
+y_des = np.load("DMP/examples/2.npz")["arr_0"].T
 y_des -= y_des[:, 0][:, None]
 
 # test normal run
