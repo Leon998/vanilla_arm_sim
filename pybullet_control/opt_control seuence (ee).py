@@ -81,7 +81,7 @@ planeId = p.loadURDF("plane.urdf")
 # 加载机器人，并设置加载的机器人的位姿
 startPos = [0, 0, 0.5]
 startOrientation = p.getQuaternionFromEuler([0, 0, 0])
-robot_id = p.loadURDF("vanilla_control/arm_demo/urdf/arm_demo.urdf", 
+robot_id = p.loadURDF("pybullet_control/model/arm_demo/urdf/arm_demo.urdf", 
                       startPos, startOrientation, useFixedBase=1)
 p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
 p.resetDebugVisualizerCamera(cameraDistance=0.8, cameraYaw=0,

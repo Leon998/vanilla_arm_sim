@@ -1,4 +1,4 @@
-n_joint_arm_to_point_control/trajectory/
+pyrobotics_control/trajectory
 
 pybullet_control/__pycache__/
 pybullet_control/model/
