@@ -1,3 +1,8 @@
+"""
+DMP method requires target positions, which are un predictable in our case.
+Here we assume some targets for test.
+"""
+print(__doc__)
 import numpy as np
 import os
 import sys

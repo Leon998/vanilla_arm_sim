@@ -34,22 +34,30 @@ time.sleep(1)
 A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
 q = 0
 
+num_demo = 5
 num_iter = 10
-for i in range(num_iter):
-    p.stepSimulation()
-    time.sleep(1./240.)
-    ## NR
-    error = robot.get_error(goal_pos, robot.ee_index)
-    robot.get_jacobian()
-    q += A.dot(np.matmul(robot.J.T, error))*dt
-    robot.FK(q)
-    kpt_ee.draw_traj()
-    kpt_ee.save_traj()
-    kpt_wrist.draw_traj()
-    kpt_wrist.save_traj()
-    kpt_elbow.draw_traj()
-    kpt_elbow.save_traj()
-    time.sleep(0.25)
+np.random.seed(1)
+for j in range(num_demo):
+    robot.FK([0.,0.,0.])
+    q = robot.q
+    A = np.array([[1, 0, 0], 
+                  [0, -4 + 2*np.random.random_sample()-1, 0], 
+                  [0, 0, 6 + 2*np.random.random_sample()-1]])
+    for i in range(num_iter):
+        p.stepSimulation()
+        time.sleep(1./240.)
+        ## NR
+        error = robot.get_error(goal_pos, robot.ee_index)
+        robot.get_jacobian()
+        q += A.dot(np.matmul(robot.J.T, error))*dt
+        robot.FK(q)
+        kpt_ee.draw_traj()
+        kpt_ee.save_traj()
+        kpt_wrist.draw_traj()
+        kpt_wrist.save_traj()
+        kpt_elbow.draw_traj()
+        kpt_elbow.save_traj()
+        time.sleep(0.1)
 np.savetxt("pybullet_control/trajectory/ee_traj.txt", kpt_ee.traj)
 np.savetxt("pybullet_control/trajectory/wrist_traj.txt", kpt_wrist.traj)
 np.savetxt("pybullet_control/trajectory/elbow_traj.txt", kpt_elbow.traj)
