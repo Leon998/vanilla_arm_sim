@@ -48,54 +48,44 @@ if __name__=="__main__":
     num_demo = 10
     num_iter = 50
     dt = 0.1
-    # ee dmp
+    
     ee = np.loadtxt("pybullet_control/trajectory/ee_traj.txt").reshape((-1, 3))
     eb = np.loadtxt("pybullet_control/trajectory/elbow_traj.txt").reshape((-1, 3))
     wr = np.loadtxt("pybullet_control/trajectory/wrist_traj.txt").reshape((-1, 3))
-    eb_ee = eb - ee
-    wr_ee = wr - ee
 
-    train_eb_ee, sampled_eb_ee = traj_GMR(eb_ee, np.array([-0.6, 0.0]), num_demo, num_iter, dt)
-    train_wr_ee, sampled_wr_ee = traj_GMR(wr_ee, np.array([-0.3, 0.0]), num_demo, num_iter, dt)
+    # GMR
+    train_eb, sampled_eb = traj_GMR(eb, np.array([0.4, 0.0]), num_demo, num_iter, dt)
+    train_wr, sampled_wr = traj_GMR(wr, np.array([0.7, 0.0]), num_demo, num_iter, dt)
 
     ee_repo = ee[3*num_iter:4*num_iter, :2]
-    print(ee_repo)
-    eb_repo = sampled_eb_ee + ee_repo
-    wr_repo = sampled_wr_ee + ee_repo
+    eb_repo = sampled_eb
+    wr_repo = sampled_wr
     
-    plt.figure(figsize=(10, 10))
-    plt.subplot(2, 2, 1)
+    plt.figure(figsize=(15, 5))
+    plt.subplot(1, 3, 1)
     plt.title("elbow GMR")
-    plt.scatter(train_eb_ee[:, 0], train_eb_ee[:, 1],  marker='.', alpha=0.8, label="Demonstration")
-    plt.plot(sampled_eb_ee[:, 0], sampled_eb_ee[:, 1], "orange", lw=4, label="Reproduction")
-    plt.xlabel("$x$")
-    plt.ylabel("$y$")
-    plt.legend()
-    
-    plt.subplot(2, 2, 2)
-    plt.title("ee-elbow repo")
-    plt.scatter(ee[:, 0], ee[:, 1], c="r", marker='.', alpha=0.1, label="ee_demo")
-    plt.plot(ee_repo[:, 0], ee_repo[:, 1], "r", label="ee_repo")
-    plt.scatter(eb[:, 0], eb[:, 1], c="g", marker='.', alpha=0.1, label="eb_demo")
-    plt.plot(eb_repo[:, 0], eb_repo[:, 1], "g", label="eb_repo")
+    plt.scatter(train_eb[:, 0], train_eb[:, 1],  marker='.', alpha=0.8, label="Demonstration")
+    plt.plot(sampled_eb[:, 0], sampled_eb[:, 1], "orange", lw=4, label="Reproduction")
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.legend()
 
-    plt.subplot(2, 2, 3)
+    plt.subplot(1, 3, 2)
     plt.title("wrist GMR")
-    plt.scatter(train_wr_ee[:, 0], train_wr_ee[:, 1],  marker='.', alpha=0.8, label="Demonstration")
-    plt.plot(sampled_wr_ee[:, 0], sampled_wr_ee[:, 1], "orange", lw=4, label="Reproduction")
+    plt.scatter(train_wr[:, 0], train_wr[:, 1],  marker='.', alpha=0.8, label="Demonstration")
+    plt.plot(sampled_wr[:, 0], sampled_wr[:, 1], "orange", lw=4, label="Reproduction")
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.legend()
 
-    plt.subplot(2, 2, 4)
-    plt.title("ee-wrist repo")
+    plt.subplot(1, 3, 3)
+    plt.title("ee-elbow-wrist repo")
     plt.scatter(ee[:, 0], ee[:, 1], c="r", marker='.', alpha=0.1, label="ee_demo")
-    plt.plot(ee_repo[:, 0], ee_repo[:, 1], "r", label="ee_repo")
+    plt.scatter(eb[:, 0], eb[:, 1], c="g", marker='.', alpha=0.1, label="eb_demo")
     plt.scatter(wr[:, 0], wr[:, 1], c="b", marker='.', alpha=0.1, label="wr_demo")
-    plt.plot(wr_repo[:, 0], wr_repo[:, 1], "b", label="wr_repo")
+    plt.plot(ee_repo[:, 0], ee_repo[:, 1], "r", lw=2, label="ee_repo")
+    plt.plot(eb_repo[:, 0], eb_repo[:, 1], "g", lw=2, label="eb_repo")
+    plt.plot(wr_repo[:, 0], wr_repo[:, 1], "b", lw=2, label="wr_repo")
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.legend()
