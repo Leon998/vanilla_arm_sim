@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import BayesianGaussianMixture
 from gmr import GMM, kmeansplusplus_initialization, covariance_initialization
+import pydmps
+import pydmps.dmp_discrete
 
 
 def traj_GMR(traj, start_pos, num_demo, num_iter, dt):
@@ -53,11 +55,27 @@ if __name__=="__main__":
     eb = np.loadtxt("pybullet_control/trajectory/elbow_traj.txt").reshape((-1, 3))
     wr = np.loadtxt("pybullet_control/trajectory/wrist_traj.txt").reshape((-1, 3))
 
-    # GMR
-    train_eb, sampled_eb = traj_GMR(eb, np.array([0.4, 0.0]), num_demo, num_iter, dt)
-    train_wr, sampled_wr = traj_GMR(wr, np.array([0.7, 0.0]), num_demo, num_iter, dt)
+    # ee DMP trajectory generation
+    dmp_ee = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
+    dmp_ee.imitate_path(y_des=ee[:num_iter, :2].T)
+    ee_imitate = []
+    # changing start position
+    dmp_ee.y = np.array([0.9, 0.6])
+    # changing end position
+    dmp_ee.goal = np.array([0.3, 0.8])
+    for t in range(dmp_ee.timesteps):
+        y, _, _ = dmp_ee.step()
+        ee_imitate.append(np.copy(y))
+        # move the target slightly every time step
+    ee_imitate = np.array(ee_imitate)
+    
+    # ee_repo = ee[3*num_iter:4*num_iter, :2]
+    ee_repo = ee_imitate[::2]
 
-    ee_repo = ee[3*num_iter:4*num_iter, :2]
+    # GMR
+    train_eb, sampled_eb = traj_GMR(eb, np.array([0.34, 0.2]), num_demo, num_iter, dt)
+    train_wr, sampled_wr = traj_GMR(wr, np.array([0.6, 0.35]), num_demo, num_iter, dt)
+
     eb_repo = sampled_eb
     wr_repo = sampled_wr
     
