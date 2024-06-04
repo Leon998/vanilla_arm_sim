@@ -29,13 +29,14 @@ p.resetDebugVisualizerCamera(cameraDistance=0.8, cameraYaw=0,
 
 goal_pos = np.array([0.5, 0.4, 0.5])
 p.addUserDebugPoints([goal_pos], [[1, 0, 0]], 20)
-dt = 0.4
 time.sleep(1)
 A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
 q = 0
 
-num_demo = 5
-num_iter = 10
+num_demo = 10
+num_iter = 40
+dt = 0.1
+
 np.random.seed(1)
 for j in range(num_demo):
     robot.FK([0.,0.,0.])
@@ -43,6 +44,7 @@ for j in range(num_demo):
     A = np.array([[1, 0, 0], 
                   [0, -4 + 2*np.random.random_sample()-1, 0], 
                   [0, 0, 6 + 2*np.random.random_sample()-1]])
+    print(A)
     for i in range(num_iter):
         p.stepSimulation()
         time.sleep(1./240.)
@@ -57,7 +59,6 @@ for j in range(num_demo):
         kpt_wrist.save_traj()
         kpt_elbow.draw_traj()
         kpt_elbow.save_traj()
-        time.sleep(0.1)
 np.savetxt("pybullet_control/trajectory/ee_traj.txt", kpt_ee.traj)
 np.savetxt("pybullet_control/trajectory/wrist_traj.txt", kpt_wrist.traj)
 np.savetxt("pybullet_control/trajectory/elbow_traj.txt", kpt_elbow.traj)

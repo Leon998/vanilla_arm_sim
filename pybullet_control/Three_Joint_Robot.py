@@ -54,7 +54,7 @@ class ROBOT:
         def draw_traj(self):
             ls = p.getLinkState(self.robot_id, self.index)
             if (self.hasPrevPose):
-                p.addUserDebugLine(self.prevPose, ls[0], [1, 0, 0], 3, 15)
+                p.addUserDebugLine(self.prevPose, ls[0], [1, 0, 0], 1.5, 15)
             self.hasPrevPose = 1
             self.prevPose = ls[0]
 
