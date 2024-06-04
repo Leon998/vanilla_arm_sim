@@ -34,7 +34,7 @@ A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
 q = 0
 
 num_demo = 10
-num_iter = 40
+num_iter = 50
 dt = 0.1
 
 np.random.seed(1)
