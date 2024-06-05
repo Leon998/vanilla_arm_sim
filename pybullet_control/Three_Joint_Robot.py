@@ -3,12 +3,17 @@ import numpy as np
 
 
 class ROBOT:
-    def __init__(self, name):
+    def __init__(self, name, init_joint_angles=[0.,0.,0.]):
         startPos = [0, 0, 0.5]
         startOrientation = p.getQuaternionFromEuler([0, 0, 0])
         self.robot_id = p.loadURDF("pybullet_control/model/"+name+"/urdf/"+name+".urdf", startPos, startOrientation, useFixedBase=1)
         self.joints_indexes = [i for i in range(p.getNumJoints(self.robot_id)) if p.getJointInfo(self.robot_id, i)[2] != p.JOINT_FIXED]
         self.elbow_index, self.wrist_index, self.ee_index = self.joints_indexes[0], self.joints_indexes[1], self.joints_indexes[2]
+        for i in range(len(self.joints_indexes)):
+            p.resetJointState(bodyUniqueId=self.robot_id,
+                              jointIndex=i,
+                              targetValue=init_joint_angles[i],
+                              targetVelocity=0)
         self.q_init, self.dq_init, self.ddq_init = self.get_joints_states()
 
     def get_joints_states(self):
@@ -45,7 +50,12 @@ class ROBOT:
             self.hasPrevPose = hasPrevPose
             self.prevPose = prevPose
             self.traj = []
-            pass
+            if self.index == self.robot.ee_index:
+                self.color = [1, 0, 0]
+            elif self.index == self.robot.elbow_index:
+                self.color = [0, 1, 0]
+            else:
+                self.color = [0, 0, 1]
 
         def save_traj(self):
             ls = p.getLinkState(self.robot_id, self.index)
@@ -54,7 +64,7 @@ class ROBOT:
         def draw_traj(self):
             ls = p.getLinkState(self.robot_id, self.index)
             if (self.hasPrevPose):
-                p.addUserDebugLine(self.prevPose, ls[0], [1, 0, 0], 1.5, 15)
+                p.addUserDebugLine(self.prevPose, ls[0], self.color, 3, 15)
             self.hasPrevPose = 1
             self.prevPose = ls[0]
 

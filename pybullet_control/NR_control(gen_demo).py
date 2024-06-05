@@ -18,7 +18,8 @@ p.setGravity(0, 0, 0)
 # 加载URDF模型，此处是加载蓝白相间的陆地
 planeId = p.loadURDF("plane.urdf")
 # 初始化机器人
-robot = ROBOT("arm_demo")
+init_joint_angles = [0., 0., 0.]
+robot = ROBOT("arm_demo", init_joint_angles)
 kpt_ee = ROBOT.keypoint(robot, robot.ee_index)
 kpt_wrist = ROBOT.keypoint(robot, robot.wrist_index)
 kpt_elbow = ROBOT.keypoint(robot, robot.elbow_index)
@@ -28,6 +29,7 @@ p.resetDebugVisualizerCamera(cameraDistance=0.8, cameraYaw=0,
                                  cameraPitch=-80, cameraTargetPosition=[0.5,0,0.5])
 
 goal_pos = np.array([0.5, 0.4, 0.5])
+# goal_pos = np.array([0.2, 0.6, 0.5])
 p.addUserDebugPoints([goal_pos], [[1, 0, 0]], 20)
 time.sleep(1)
 A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
@@ -39,7 +41,7 @@ dt = 0.1
 
 np.random.seed(1)
 for j in range(num_demo):
-    robot.FK([0.,0.,0.])
+    robot.FK(init_joint_angles)
     q = robot.q
     A = np.array([[1, 0, 0], 
                   [0, -4 + 2*np.random.random_sample()-1, 0], 
@@ -53,6 +55,7 @@ for j in range(num_demo):
         robot.get_jacobian()
         q += A.dot(np.matmul(robot.J.T, error))*dt
         robot.FK(q)
+        # time.sleep(0.05)
         kpt_ee.draw_traj()
         kpt_ee.save_traj()
         kpt_wrist.draw_traj()

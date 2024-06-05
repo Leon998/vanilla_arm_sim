@@ -15,7 +15,7 @@ wr = np.loadtxt("pybullet_control/trajectory/wrist_traj.txt").reshape((-1, 3))
 eb_ee = eb - ee
 wr_ee = wr - ee
 
-X = wr_ee[:, :2]
+X = ee[:, :2]
 X = X.reshape((num_demo, num_iter, -1))
 print(X.shape)  # (num_demo, num_iter, 2)
 X_train = []

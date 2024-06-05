@@ -70,9 +70,10 @@ if __name__=="__main__":
         ee_imitate.append(np.copy(y))
         # move the target slightly every time step
     ee_imitate = np.array(ee_imitate)
+    ee_repo = ee_imitate[::2]
     
     # ee_repo = ee[3*num_iter:4*num_iter, :2]
-    ee_repo = ee_imitate[::2]
+    
 
     # GMR
     train_eb_ee, sampled_eb_ee = traj_GMR(eb_ee, np.array([-0.52, -0.3]), num_demo, num_iter, dt)
