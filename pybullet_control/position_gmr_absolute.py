@@ -68,17 +68,17 @@ if __name__=="__main__":
         ee_imitate.append(np.copy(y))
         # move the target slightly every time step
     ee_imitate = np.array(ee_imitate)
-    ee_repo = ee_imitate[::2]
+    ee_repro = ee_imitate[::2]
     
-    # ee_repo = ee[3*num_iter:4*num_iter, :2]
+    # ee_repro = ee[3*num_iter:4*num_iter, :2]
     
 
     # GMR
     train_eb, sampled_eb = traj_GMR(eb, np.array([0.34, 0.2]), num_demo, num_iter, dt)
     train_wr, sampled_wr = traj_GMR(wr, np.array([0.6, 0.35]), num_demo, num_iter, dt)
 
-    eb_repo = sampled_eb
-    wr_repo = sampled_wr
+    eb_repro = sampled_eb
+    wr_repro = sampled_wr
     
     plt.figure(figsize=(15, 5))
     plt.subplot(1, 3, 1)
@@ -98,13 +98,13 @@ if __name__=="__main__":
     plt.legend()
 
     plt.subplot(1, 3, 3)
-    plt.title("ee-elbow-wrist repo")
+    plt.title("ee-elbow-wrist repro")
     plt.scatter(ee[:, 0], ee[:, 1], c="r", marker='.', alpha=0.1, label="ee_demo")
     plt.scatter(eb[:, 0], eb[:, 1], c="g", marker='.', alpha=0.1, label="eb_demo")
     plt.scatter(wr[:, 0], wr[:, 1], c="b", marker='.', alpha=0.1, label="wr_demo")
-    plt.plot(ee_repo[:, 0], ee_repo[:, 1], "r", lw=2, label="ee_repo")
-    plt.plot(eb_repo[:, 0], eb_repo[:, 1], "g", lw=2, label="eb_repo")
-    plt.plot(wr_repo[:, 0], wr_repo[:, 1], "b", lw=2, label="wr_repo")
+    plt.plot(ee_repro[:, 0], ee_repro[:, 1], "r", lw=2, label="ee_repro")
+    plt.plot(eb_repro[:, 0], eb_repro[:, 1], "g", lw=2, label="eb_repro")
+    plt.plot(wr_repro[:, 0], wr_repro[:, 1], "b", lw=2, label="wr_repro")
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.legend()

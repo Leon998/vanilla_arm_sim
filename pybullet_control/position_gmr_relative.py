@@ -70,17 +70,17 @@ if __name__=="__main__":
         ee_imitate.append(np.copy(y))
         # move the target slightly every time step
     ee_imitate = np.array(ee_imitate)
-    ee_repo = ee_imitate[::2]
+    ee_repro = ee_imitate[::2]
     
-    # ee_repo = ee[3*num_iter:4*num_iter, :2]
+    # ee_repro = ee[3*num_iter:4*num_iter, :2]
     
 
     # GMR
     train_eb_ee, sampled_eb_ee = traj_GMR(eb_ee, np.array([-0.52, -0.3]), num_demo, num_iter, dt)
     train_wr_ee, sampled_wr_ee = traj_GMR(wr_ee, np.array([-0.26, -0.15]), num_demo, num_iter, dt)
 
-    eb_repo = sampled_eb_ee + ee_repo
-    wr_repo = sampled_wr_ee + ee_repo
+    eb_repro = sampled_eb_ee + ee_repro
+    wr_repro = sampled_wr_ee + ee_repro
     
     plt.figure(figsize=(15, 5))
     plt.subplot(1, 3, 1)
@@ -100,13 +100,13 @@ if __name__=="__main__":
     plt.legend()
 
     plt.subplot(1, 3, 3)
-    plt.title("ee-elbow-wrist repo")
+    plt.title("ee-elbow-wrist repro")
     plt.scatter(ee[:, 0], ee[:, 1], c="r", marker='.', alpha=0.1, label="ee_demo")
     plt.scatter(eb[:, 0], eb[:, 1], c="g", marker='.', alpha=0.1, label="eb_demo")
     plt.scatter(wr[:, 0], wr[:, 1], c="b", marker='.', alpha=0.1, label="wr_demo")
-    plt.plot(ee_repo[:, 0], ee_repo[:, 1], "r", lw=2, label="ee_repo")
-    plt.plot(eb_repo[:, 0], eb_repo[:, 1], "g", lw=2, label="eb_repo")
-    plt.plot(wr_repo[:, 0], wr_repo[:, 1], "b", lw=2, label="wr_repo")
+    plt.plot(ee_repro[:, 0], ee_repro[:, 1], "r", lw=2, label="ee_repro")
+    plt.plot(eb_repro[:, 0], eb_repro[:, 1], "g", lw=2, label="eb_repro")
+    plt.plot(wr_repro[:, 0], wr_repro[:, 1], "b", lw=2, label="wr_repro")
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.legend()
@@ -114,8 +114,8 @@ if __name__=="__main__":
     plt.tight_layout()
     plt.show()
 
-    # save repo trajectory
+    # save repro trajectory
     z = ee[:num_iter, 2].reshape((-1, 1))
-    np.savetxt("pybullet_control/trajectory/ee_repo.txt", np.concatenate((ee_repo, z),axis=1)[::5])
-    np.savetxt("pybullet_control/trajectory/elbow_repo.txt", np.concatenate((eb_repo, z),axis=1)[::5])
-    np.savetxt("pybullet_control/trajectory/wrist_repo.txt", np.concatenate((wr_repo, z),axis=1)[::5])
+    np.savetxt("pybullet_control/trajectory/ee_repro.txt", np.concatenate((ee_repro, z),axis=1)[::5])
+    np.savetxt("pybullet_control/trajectory/elbow_repro.txt", np.concatenate((eb_repro, z),axis=1)[::5])
+    np.savetxt("pybullet_control/trajectory/wrist_repro.txt", np.concatenate((wr_repro, z),axis=1)[::5])
