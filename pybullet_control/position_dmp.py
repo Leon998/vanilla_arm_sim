@@ -16,10 +16,10 @@ num_demo = 10
 num_iter = 50
 dt = 0.1
 # ee dmp
-ee_demo = np.loadtxt("pybullet_control/trajectory/ee_traj.txt")[:num_iter, :2].T.reshape((2, -1))
+ee_demo = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:num_iter, :2].T.reshape((2, -1))
 
 # wr_ee dmp
-wr_demo = np.loadtxt("pybullet_control/trajectory/wrist_traj.txt")[:num_iter, :2].T.reshape((2, -1))
+wr_demo = np.loadtxt("pybullet_control/trajectory/wrist_demo.txt")[:num_iter, :2].T.reshape((2, -1))
 wr_ee_demo = wr_demo - ee_demo
 
 plt.figure(1, figsize=(6, 6))
@@ -60,7 +60,7 @@ wr_ee_imitate = []
 # changing start position
 dmp_wr_ee.y = np.array([-0.15, -0.15])
 # changing end position
-dmp_wr_ee.goal = np.array([-0.1, -0.3])
+dmp_wr_ee.goal = np.array([0.1, -0.25])
 for t in range(dmp_wr_ee.timesteps):
     y, _, _ = dmp_wr_ee.step()
     wr_ee_imitate.append(np.copy(y))
