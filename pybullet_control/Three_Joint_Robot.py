@@ -59,7 +59,10 @@ class ROBOT:
 
         def save_traj(self):
             ls = p.getLinkState(self.robot_id, self.index)
-            self.traj.append(ls[0])
+            if self.index == self.robot.ee_index:
+                self.traj.append(np.hstack((ls[0], ls[1])))
+            else:
+                self.traj.append(ls[0])
             
         def draw_traj(self):
             ls = p.getLinkState(self.robot_id, self.index)
