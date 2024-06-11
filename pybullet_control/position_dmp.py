@@ -12,78 +12,76 @@ import pydmps
 import pydmps.dmp_discrete
 
 
+def kpt_dmp(kpt_demo, start_pos, end_pos):
+    dmp_kpt = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
+    dmp_kpt.imitate_path(y_des=kpt_demo)
+    kpt_imitate = []
+    dkpt_imitate = []
+    # changing start position
+    dmp_kpt.y = np.array(start_pos)
+    # changing end position
+    dmp_kpt.goal = np.array(end_pos)
+    for t in range(dmp_kpt.timesteps):
+        y, dy, _ = dmp_kpt.step()
+        kpt_imitate.append(np.copy(y))
+        dkpt_imitate.append(np.copy(dy))
+    kpt_imitate = np.array(kpt_imitate)
+    dkpt_imitate = np.array(dkpt_imitate)
+    return kpt_imitate, dkpt_imitate
+
+
 num_demo = 10
 num_iter = 50
 dt = 0.1
-# ee dmp
+# ee
 ee_demo = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:num_iter, :2].T.reshape((2, -1))
-
-# wr_ee dmp
+# wr_ee
 wr_demo = np.loadtxt("pybullet_control/trajectory/wrist_demo.txt")[:num_iter, :2].T.reshape((2, -1))
 wr_ee_demo = wr_demo - ee_demo
-
-# eb_ee dmp
+# eb_ee
 eb_demo = np.loadtxt("pybullet_control/trajectory/elbow_demo.txt")[:num_iter, :2].T.reshape((2, -1))
 eb_ee_demo = eb_demo - ee_demo
 
-plt.figure(1, figsize=(6, 6))
-
 # ee imitate
-dmp_ee = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
-dmp_ee.imitate_path(y_des=ee_demo)
-ee_imitate = []
-# changing start position
-dmp_ee.y = np.array([0.86, 0.5])
-# changing end position
-dmp_ee.goal = np.array([0.24, 0.58])
-for t in range(dmp_ee.timesteps):
-    y, _, _ = dmp_ee.step()
-    ee_imitate.append(np.copy(y))
-    # move the target slightly every time step
-ee_imitate = np.array(ee_imitate)
-
+ee_imitate, dee_imitate = kpt_dmp(ee_demo, [1.05, 0.56], [0.28, 0.58])
 ## wr_ee imitate
-dmp_wr_ee = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
-dmp_wr_ee.imitate_path(y_des=wr_ee_demo)
-wr_ee_imitate = []
-# changing start position
-dmp_wr_ee.y = np.array([-0.25, -0.15])
-# changing end position
-dmp_wr_ee.goal = np.array([0.1, -0.25])
-for t in range(dmp_wr_ee.timesteps):
-    y, _, _ = dmp_wr_ee.step()
-    wr_ee_imitate.append(np.copy(y))
-    # move the target slightly every time step
-wr_ee_imitate = np.array(wr_ee_imitate)
+wr_ee_imitate, dwr_ee_imitate = kpt_dmp(wr_ee_demo, [-0.25, -0.15], [0.13, -0.24])
 wr_imitate = wr_ee_imitate + ee_imitate
-
+dwr_imitate = dwr_ee_imitate + dee_imitate
 ## eb_ee imitate
-dmp_eb_ee = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
-dmp_eb_ee.imitate_path(y_des=eb_ee_demo)
-eb_ee_imitate = []
-# changing start position
-dmp_eb_ee.y = np.array([-0.48, -0.28])
-# changing end position
-dmp_eb_ee.goal = np.array([-0.16, -0.18])
-for t in range(dmp_eb_ee.timesteps):
-    y, _, _ = dmp_eb_ee.step()
-    eb_ee_imitate.append(np.copy(y))
-    # move the target slightly every time step
-eb_ee_imitate = np.array(eb_ee_imitate)
+eb_ee_imitate, deb_ee_imitate = kpt_dmp(eb_ee_demo, [-0.63, -0.29], [-0.24, -0.08])
 eb_imitate = eb_ee_imitate + ee_imitate
+deb_imitate = deb_ee_imitate + dee_imitate
 
 
-
+plt.figure(figsize=(15, 5))
+plt.subplot(1, 3, 1)
+plt.title("DMP system")
 plt.plot(ee_demo[0, :], ee_demo[1, :], "r--", lw=2, label="ee demo")
 plt.plot(wr_demo[0, :], wr_demo[1, :], "g--", lw=2, label="wr demo")
 plt.plot(eb_demo[0, :], eb_demo[1, :], "b--", lw=2, label="eb demo")
 plt.plot(ee_imitate[:, 0], ee_imitate[:, 1], "r", lw=2, label="ee imitate")
 plt.plot(wr_imitate[:, 0], wr_imitate[:, 1], "g", lw=2, label="wr imitate")
 plt.plot(eb_imitate[:, 0], eb_imitate[:, 1], "b", lw=2, label="eb imitate")
-plt.title("DMP system")
 plt.xlim(-0.1, 1.2)
 plt.ylim(-0.1, 1.2)
 ax = plt.gca()
 ax.set_aspect('equal')
+plt.legend()
+
+num_points = len(ee_imitate)
+t = np.linspace(0, 1, num_points)
+plt.subplot(1, 3, 2)
+plt.title("x velocity")
+plt.plot(t, dee_imitate[:, 0], "r", lw=2, label="ee imitate")
+plt.plot(t, dwr_imitate[:, 0], "g", lw=2, label="wr imitate")
+plt.plot(t, deb_imitate[:, 0], "b", lw=2, label="eb imitate")
+plt.legend()
+
+plt.subplot(1, 3, 3)
+plt.title("y velocity")
+plt.plot(t, dee_imitate[:, 1], "r", lw=2, label="ee imitate")
+plt.plot(t, dwr_imitate[:, 1], "g", lw=2, label="wr imitate")
+plt.plot(t, deb_imitate[:, 1], "b", lw=2, label="eb imitate")
 plt.legend()
 plt.show()
