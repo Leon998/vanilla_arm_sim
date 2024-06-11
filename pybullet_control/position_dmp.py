@@ -12,6 +12,11 @@ import pydmps
 import pydmps.dmp_discrete
 
 
+num_demo = 10
+num_iter = 50
+dt = 0.1
+
+
 def kpt_dmp(kpt_demo, start_pos, end_pos):
     dmp_kpt = pydmps.dmp_discrete.DMPs_discrete(n_dmps=2, n_bfs=500, ay=np.ones(2) * 10.0)
     dmp_kpt.imitate_path(y_des=kpt_demo)
@@ -22,24 +27,27 @@ def kpt_dmp(kpt_demo, start_pos, end_pos):
     # changing end position
     dmp_kpt.goal = np.array(end_pos)
     for t in range(dmp_kpt.timesteps):
-        y, dy, _ = dmp_kpt.step()
+        y, dy, _ = dmp_kpt.step(tau=1.0)  # tau is for making the system execute faster or slower
         kpt_imitate.append(np.copy(y))
         dkpt_imitate.append(np.copy(dy))
     kpt_imitate = np.array(kpt_imitate)
     dkpt_imitate = np.array(dkpt_imitate)
     return kpt_imitate, dkpt_imitate
 
+def compute_velocity(x, dt):
+    x_dot = (x.T[1:] - x.T[:-1]) / dt
+    return x_dot.T * 6
 
-num_demo = 10
-num_iter = 50
-dt = 0.1
 # ee
 ee_demo = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:num_iter, :2].T.reshape((2, -1))
+dee_demo = compute_velocity(ee_demo, dt)
 # wr_ee
 wr_demo = np.loadtxt("pybullet_control/trajectory/wrist_demo.txt")[:num_iter, :2].T.reshape((2, -1))
+dwr_demo = compute_velocity(wr_demo, dt)
 wr_ee_demo = wr_demo - ee_demo
 # eb_ee
 eb_demo = np.loadtxt("pybullet_control/trajectory/elbow_demo.txt")[:num_iter, :2].T.reshape((2, -1))
+deb_demo = compute_velocity(eb_demo, dt)
 eb_ee_demo = eb_demo - ee_demo
 
 # ee imitate
@@ -69,19 +77,26 @@ ax = plt.gca()
 ax.set_aspect('equal')
 plt.legend()
 
-num_points = len(ee_imitate)
-t = np.linspace(0, 1, num_points)
+
+t_demo = np.linspace(0, 1, len(dee_demo.T))
+t_imitate = np.linspace(0, 1, len(ee_imitate))
 plt.subplot(1, 3, 2)
 plt.title("x velocity")
-plt.plot(t, dee_imitate[:, 0], "r", lw=2, label="ee imitate")
-plt.plot(t, dwr_imitate[:, 0], "g", lw=2, label="wr imitate")
-plt.plot(t, deb_imitate[:, 0], "b", lw=2, label="eb imitate")
+plt.plot(t_demo, dee_demo[0, :], "r--", lw=2, label="ee demo")
+plt.plot(t_demo, dwr_demo[0, :], "g--", lw=2, label="wr demo")
+plt.plot(t_demo, deb_demo[0, :], "b--", lw=2, label="eb demo")
+plt.plot(t_imitate, dee_imitate[:, 0], "r", lw=2, label="ee imitate")
+plt.plot(t_imitate, dwr_imitate[:, 0], "g", lw=2, label="wr imitate")
+plt.plot(t_imitate, deb_imitate[:, 0], "b", lw=2, label="eb imitate")
 plt.legend()
 
 plt.subplot(1, 3, 3)
 plt.title("y velocity")
-plt.plot(t, dee_imitate[:, 1], "r", lw=2, label="ee imitate")
-plt.plot(t, dwr_imitate[:, 1], "g", lw=2, label="wr imitate")
-plt.plot(t, deb_imitate[:, 1], "b", lw=2, label="eb imitate")
+plt.plot(t_demo, dee_demo[1, :], "r--", lw=2, label="ee demo")
+plt.plot(t_demo, dwr_demo[1, :], "g--", lw=2, label="wr demo")
+plt.plot(t_demo, deb_demo[1, :], "b--", lw=2, label="eb demo")
+plt.plot(t_imitate, dee_imitate[:, 1], "r", lw=2, label="ee imitate")
+plt.plot(t_imitate, dwr_imitate[:, 1], "g", lw=2, label="wr imitate")
+plt.plot(t_imitate, deb_imitate[:, 1], "b", lw=2, label="eb imitate")
 plt.legend()
 plt.show()

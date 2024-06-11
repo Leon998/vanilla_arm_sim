@@ -52,7 +52,7 @@ class ROBOT:
             self.traj = []
             if self.index == self.robot.ee_index:
                 self.color = [1, 0, 0]
-            elif self.index == self.robot.elbow_index:
+            elif self.index == self.robot.wrist_index:
                 self.color = [0, 1, 0]
             else:
                 self.color = [0, 0, 1]
