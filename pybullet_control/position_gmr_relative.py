@@ -39,9 +39,9 @@ def traj_GMR(traj, start_pos, num_demo, num_iter, dt):
         sampled_path.append(x)
         cgmm = gmm.condition([0, 1], x)
         ## default alpha defines the confidence region (e.g., 0.7 -> 70 %)
-        # x_dot = cgmm.sample_confidence_region(1, alpha=0.7)[0]
+        x_dot = cgmm.sample_confidence_region(1, alpha=0.7)[0]
         ## mean sampling
-        x_dot = cgmm.to_mvn().mean
+        # x_dot = cgmm.to_mvn().mean
         x = x + sampling_dt * x_dot
     sampled_path = np.array(sampled_path)
     return X_train, sampled_path
@@ -51,9 +51,9 @@ if __name__=="__main__":
     num_iter = 50
     dt = 0.1
     
-    ee = np.loadtxt("pybullet_control/trajectory/ee_traj.txt").reshape((-1, 3))
-    eb = np.loadtxt("pybullet_control/trajectory/elbow_traj.txt").reshape((-1, 3))
-    wr = np.loadtxt("pybullet_control/trajectory/wrist_traj.txt").reshape((-1, 3))
+    ee = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:, :3].reshape((-1, 3))
+    eb = np.loadtxt("pybullet_control/trajectory/elbow_demo.txt").reshape((-1, 3))
+    wr = np.loadtxt("pybullet_control/trajectory/wrist_demo.txt").reshape((-1, 3))
     eb_ee = eb - ee
     wr_ee = wr - ee
 
