@@ -36,16 +36,16 @@ time.sleep(1)
 q = 0
 
 num_demo = 1
-num_iter = 50
-dt = 0.1
+num_iter = 100
+dt = 0.01
 
 np.random.seed(1)
 for j in range(num_demo):
     robot.FK(init_joint_angles)
     q = robot.q
-    A = np.array([[1, 0, 0], 
-                  [0, -6 + 2*np.random.random_sample()-1, 0], 
-                  [0, 0, 7 + 2*np.random.random_sample()-1]])
+    A = np.array([[5, 0, 0], 
+                  [0, -20 + 10*np.random.random_sample()-5, 0], 
+                  [0, 0, 30 + 10*np.random.random_sample()-5]])
     print(A)
     for i in range(num_iter):
         p.stepSimulation()
@@ -55,7 +55,7 @@ for j in range(num_demo):
         robot.get_jacobian()
         q += A.dot(np.matmul(robot.J.T, error))*dt
         robot.FK(q)
-        time.sleep(0.05)
+        # time.sleep(0.05)
         kpt_ee.draw_traj()
         kpt_ee.save_traj()
         kpt_wrist.draw_traj()

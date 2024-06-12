@@ -32,20 +32,20 @@ goal_pos = np.array([0.5, 0.4, 0.5])
 # goal_pos = np.array([0.2, 0.6, 0.5])
 p.addUserDebugPoints([goal_pos], [[1, 0, 0]], 20)
 time.sleep(1)
-A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
+# A = np.array([[1, 0, 0], [0, -4, 0], [0, 0, 6]])
 q = 0
 
 num_demo = 10
-num_iter = 50
-dt = 0.1
+num_iter = 100
+dt = 0.01
 
 np.random.seed(1)
 for j in range(num_demo):
     robot.FK(init_joint_angles)
     q = robot.q
-    A = np.array([[1, 0, 0], 
-                  [0, -4 + 2*np.random.random_sample()-1, 0], 
-                  [0, 0, 6 + 2*np.random.random_sample()-1]])
+    A = np.array([[5, 0, 0], 
+                  [0, -20 + 10*np.random.random_sample()-5, 0], 
+                  [0, 0, 30 + 10*np.random.random_sample()-5]])
     print(A)
     for i in range(num_iter):
         p.stepSimulation()

@@ -13,8 +13,8 @@ import pydmps.dmp_discrete
 
 
 num_demo = 10
-num_iter = 50
-dt = 0.1
+num_iter = 100
+dt = 0.01
 
 
 def kpt_dmp(kpt_demo, start_pos, end_pos):
@@ -36,7 +36,7 @@ def kpt_dmp(kpt_demo, start_pos, end_pos):
 
 def compute_velocity(x, dt):
     x_dot = (x.T[1:] - x.T[:-1]) / dt
-    return x_dot.T * 6
+    return x_dot.T
 
 # ee
 ee_demo = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:num_iter, :2].T.reshape((2, -1))
@@ -100,3 +100,9 @@ plt.plot(t_imitate, dwr_imitate[:, 1], "g", lw=2, label="wr imitate")
 plt.plot(t_imitate, deb_imitate[:, 1], "b", lw=2, label="eb imitate")
 plt.legend()
 plt.show()
+
+# save repro trajectory
+z = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:len(ee_imitate), 2].reshape((-1, 1))
+np.savetxt("pybullet_control/trajectory/ee_imitate.txt", np.concatenate((ee_imitate, z),axis=1)[::10])
+np.savetxt("pybullet_control/trajectory/elbow_imitate.txt", np.concatenate((eb_imitate, z),axis=1)[::10])
+np.savetxt("pybullet_control/trajectory/wrist_imitate.txt", np.concatenate((wr_imitate, z),axis=1)[::10])

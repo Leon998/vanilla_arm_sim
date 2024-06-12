@@ -83,18 +83,18 @@ p.resetDebugVisualizerCamera(cameraDistance=0.8, cameraYaw=0,
                                  cameraPitch=-80, cameraTargetPosition=[0.5,0,0.5])
 
 
-ee_repo = np.loadtxt("pybullet_control/trajectory/ee_repo.txt")
-wrist_repo = np.loadtxt("pybullet_control/trajectory/wrist_repo.txt")
-elbow_repo = np.loadtxt("pybullet_control/trajectory/elbow_repo.txt")
-sample_len = len(ee_repo)
+ee_imitate = np.loadtxt("pybullet_control/trajectory/ee_imitate.txt")
+wrist_imitate = np.loadtxt("pybullet_control/trajectory/wrist_imitate.txt")
+elbow_imitate = np.loadtxt("pybullet_control/trajectory/elbow_imitate.txt")
+sample_len = len(ee_imitate)
 
-p.addUserDebugPoints(ee_repo, [([1, 0, 0]) for i in range(len(ee_repo))], 5)
-p.addUserDebugPoints(wrist_repo, [([1, 0, 0]) for i in range(len(wrist_repo))], 5)
-p.addUserDebugPoints(elbow_repo, [([1, 0, 0]) for i in range(len(elbow_repo))], 5)
+p.addUserDebugPoints(ee_imitate, [([1, 0, 0]) for i in range(len(ee_imitate))], 5)
+p.addUserDebugPoints(wrist_imitate, [([1, 0, 0]) for i in range(len(wrist_imitate))], 5)
+p.addUserDebugPoints(elbow_imitate, [([1, 0, 0]) for i in range(len(elbow_imitate))], 5)
 time.sleep(1)
 
-Q_star, Error = opt_kpt(robot, sample_len, ee_repo, wrist_repo, elbow_repo)
-# Q_star, Error = opt_ee(robot, sample_len, ee_repo)
+Q_star, Error = opt_kpt(robot, sample_len, ee_imitate, wrist_imitate, elbow_imitate)
+# Q_star, Error = opt_ee(robot, sample_len, ee_imitate)
 print("Q_star = ", Q_star)
 print("Error = ", Error)
 
