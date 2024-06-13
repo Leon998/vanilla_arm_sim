@@ -9,7 +9,7 @@ import pydmps.dmp_discrete
 def traj_GMR(traj, start_pos, num_demo, num_iter, dt):
     X = traj[:, :2]
     X = X.reshape((num_demo, num_iter, -1))
-    print(X.shape)  # (num_demo, num_iter, 2)
+    # print(X.shape)  # (num_demo, num_iter, 2)
     X_train = []
     # compute velocity
     for x in X:
@@ -19,7 +19,7 @@ def traj_GMR(traj, start_pos, num_demo, num_iter, dt):
         X_train.append(x_train)
     X_train = np.array(X_train)
     X_train = X_train.reshape(-1, 4)
-    print(X_train.shape)  #(num_demo*(num_iter-1), 4)
+    # print(X_train.shape)  #(num_demo*(num_iter-1), 4)
 
     # GMR
     random_state = np.random.RandomState(0)
@@ -48,8 +48,8 @@ def traj_GMR(traj, start_pos, num_demo, num_iter, dt):
 
 if __name__=="__main__":
     num_demo = 10
-    num_iter = 50
-    dt = 0.1
+    num_iter = 100
+    dt = 0.01
     
     ee = np.loadtxt("pybullet_control/trajectory/ee_demo.txt")[:, :3].reshape((-1, 3))
     eb = np.loadtxt("pybullet_control/trajectory/elbow_demo.txt").reshape((-1, 3))
@@ -70,7 +70,7 @@ if __name__=="__main__":
         ee_imitate.append(np.copy(y))
         # move the target slightly every time step
     ee_imitate = np.array(ee_imitate)
-    ee_repro = ee_imitate[::2]
+    ee_repro = ee_imitate
     
     # ee_repro = ee[3*num_iter:4*num_iter, :2]
     
@@ -114,8 +114,8 @@ if __name__=="__main__":
     plt.tight_layout()
     plt.show()
 
-    # save repro trajectory
-    z = ee[:num_iter, 2].reshape((-1, 1))
-    np.savetxt("pybullet_control/trajectory/ee_repro.txt", np.concatenate((ee_repro, z),axis=1)[::5])
-    np.savetxt("pybullet_control/trajectory/elbow_repro.txt", np.concatenate((eb_repro, z),axis=1)[::5])
-    np.savetxt("pybullet_control/trajectory/wrist_repro.txt", np.concatenate((wr_repro, z),axis=1)[::5])
+    # # save repro trajectory
+    # z = ee[:num_iter, 2].reshape((-1, 1))
+    # np.savetxt("pybullet_control/trajectory/ee_repro.txt", np.concatenate((ee_repro, z),axis=1)[::5])
+    # np.savetxt("pybullet_control/trajectory/elbow_repro.txt", np.concatenate((eb_repro, z),axis=1)[::5])
+    # np.savetxt("pybullet_control/trajectory/wrist_repro.txt", np.concatenate((wr_repro, z),axis=1)[::5])
